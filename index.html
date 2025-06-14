@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GURUKUL COMPUTER CLASS</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1581092160613-1c04d1d88e22?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: rgba(30, 58, 138, 0.9);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    section {
+      padding: 20px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(30, 58, 138, 0.9);
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    .hidden {
+      display: none;
+    }
+    input, select, button {
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #1e3a8a;
+      color: white;
+      cursor: pointer;
+    }
+    .student-item {
+      margin-bottom: 10px;
+    }
+    .delete-btn {
+      margin-left: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .student-photo {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GURUKUL COMPUTER CLASS</h1>
+  </header>
+
+  <section id="loginSection">
+    <div class="card">
+      <h2>Admin Login</h2>
+      <input type="text" id="username" placeholder="Username" /><br />
+      <input type="password" id="password" placeholder="Password" /><br />
+      <button onclick="login()">Login</button>
+      <p id="loginMessage" style="color:red;"></p>
+    </div>
+  </section>
+
+  <section id="mainContent" class="hidden">
+    <div class="card">
+      <h2>About GURUKUL COMPUTER CLASS</h2>
+      <p>
+        GURUKUL COMPUTER CLASS was established to provide top-quality computer education
+        for students in various programming, software, and digital literacy skills. Our mission
+        is to empower learners for the digital age.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Add Student Details</h2>
+      <form onsubmit="addStudent(); return false;">
+        <input type="file" id="studentPhoto" accept="image/*" required />
+        <input type="text" id="studentName" placeholder="Student Name" required />
+        <input type="text" id="fatherName" placeholder="Father's Name" required />
+        <input type="text" id="mobileNumber" placeholder="Mobile Number" required />
+        <input type="text" id="address" placeholder="Address" required />
+        <input type="text" id="studentCourse" placeholder="Course Name" required />
+        <select id="feeStatus" required>
+          <option value="">Select Fee Status</option>
+          <option value="Paid">Paid</option>
+          <option value="Not Paid">Not Paid</option>
+        </select>
+        <button type="submit">Add Student</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Upload Student Certificate</h2>
+      <form onsubmit="uploadCertificate(); return false;">
+        <input type="text" id="certStudentName" placeholder="Student Name" required />
+        <input type="file" id="certificateFile" accept="application/pdf,image/*" required />
+        <button type="submit">Upload Certificate</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Student List</h2>
+      <ul id="studentList">
+        <!-- New entries will appear here -->
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Download Student Certificates</h2>
+      <ul id="certificateList">
+        <!-- Certificates for download -->
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 GURUKUL COMPUTER CLASS. All Rights Reserved.
+  </footer>
+
+  <script>
+    function login() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      const msg = document.getElementById("loginMessage");
+
+      if (user === "GURUKUL123" && pass === "Toufiq@1234") {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("mainContent").classList.remove("hidden");
+      } else {
+        msg.textContent = "Invalid credentials. Access denied.";
+      }
+    }
+
+    function addStudent() {
+      const name = document.getElementById("studentName").value;
+      const father = document.getElementById("fatherName").value;
+      const mobile = document.getElementById("mobileNumber").value;
+      const address = document.getElementById("address").value;
+      const course = document.getElementById("studentCourse").value;
+      const fee = document.getElementById("feeStatus").value;
+      const photoInput = document.getElementById("studentPhoto");
+      const list = document.getElementById("studentList");
+
+      const li = document.createElement("li");
+      li.className = "student-item";
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.className = "student-photo";
+
+        const info = document.createElement("span");
+        info.textContent = `Name: ${name} | Father's Name: ${father} | Mobile: ${mobile} | Address: ${address} | Course: ${course} | Fee: ${fee}`;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = function () {
+          list.removeChild(li);
+        };
+
+        li.appendChild(img);
+        li.appendChild(info);
+        li.appendChild(deleteBtn);
+        list.appendChild(li);
+      };
+      reader.readAsDataURL(photoInput.files[0]);
+
+      document.getElementById("studentName").value = "";
+      document.getElementById("fatherName").value = "";
+      document.getElementById("mobileNumber").value = "";
+      document.getElementById("address").value = "";
+      document.getElementById("studentCourse").value = "";
+      document.getElementById("feeStatus").value = "";
+      document.getElementById("studentPhoto").value = "";
+    }
+
+    function uploadCertificate() {
+      const name = document.getElementById("certStudentName").value;
+      const fileInput = document.getElementById("certificateFile");
+      const list = document.getElementById("certificateList");
+
+      const li = document.createElement("li");
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const link = document.createElement("a");
+        link.href = e.target.result;
+        link.download = name + "_certificate";
+        link.textContent = `Download Certificate for ${name}`;
+        link.target = "_blank";
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = function () {
+          list.removeChild(li);
+        };
+
+        li.appendChild(link);
+        li.appendChild(deleteBtn);
+        list.appendChild(li);
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+
+      document.getElementById("certStudentName").value = "";
+      document.getElementById("certificateFile").value = "";
+    }
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GURUKUL COMPUTER CLASS</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+        url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+    header {
+      background-color: rgba(30, 58, 138, 0.95);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    section {
+      padding: 20px;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+      color: #000;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(30, 58, 138, 0.95);
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+    .hidden {
+      display: none;
+    }
+    input, select, button {
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #1e3a8a;
+      color: white;
+      cursor: pointer;
+    }
+    .student-item {
+      margin-bottom: 10px;
+    }
+    .delete-btn {
+      margin-left: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .student-photo {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GURUKUL COMPUTER CLASS</h1>
+  </header>
+
+  <!-- rest of the body remains unchanged -->
+  
+</body>
+</html>
